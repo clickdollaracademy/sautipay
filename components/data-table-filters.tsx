@@ -241,4 +241,3 @@ export function DataTableFilters(props: DataTableFiltersProps) {
     </div>
   )
 }
-

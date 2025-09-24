@@ -4,13 +4,15 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Toaster } from "@/components/ui/toaster"
+import { NotificationsToast } from "@/components/notifications-toast"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Sauti Pay",
+  title: "Sauti Travels",
   description: "Comprehensive payment solutions for your business",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
@@ -27,21 +29,21 @@ export default function RootLayout({
               <Link
                 href="/"
                 className="text-xl font-semibold hover:text-primary transition-colors duration-200"
-                title="Go to Sauti Pay Homepage"
+                title="Go to Sauti Travels Homepage"
               >
-                Sauti Pay
+                Sauti Travels
               </Link>
               <div className="flex items-center space-x-8">
                 <div className="hidden md:flex space-x-8">
                   <Link
-                    href="/services"
+                    href="/buy"
                     prefetch={true}
                     className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
                   >
-                    Services
+                    Buy Travel Insurance
                   </Link>
-                  <Link href="/pricing" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
-                    Pricing
+                  <Link href="/claims" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                    Claims
                   </Link>
                   <Link href="/refund" className="text-gray-600 hover:text-gray-900 transition-colors duration-200">
                     Refund
@@ -72,8 +74,9 @@ export default function RootLayout({
           </header>
           <main className="flex-1">{children}</main>
         </div>
+        <Toaster />
+        <NotificationsToast />
       </body>
     </html>
   )
 }
-

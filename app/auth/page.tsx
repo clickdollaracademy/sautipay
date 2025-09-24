@@ -4,4 +4,3 @@ export default function AuthPage() {
   // Redirect to the login page
   redirect("/login")
 }
-

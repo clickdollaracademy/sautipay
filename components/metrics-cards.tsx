@@ -71,4 +71,3 @@ export function MetricsCards({ totalDue, pendingCommissions, activeRefunds }: Me
     </div>
   )
 }
-

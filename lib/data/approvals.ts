@@ -145,4 +145,3 @@ export async function getApprovals(params: ApprovalQueryParams): Promise<Paginat
 export async function getPendingApprovalsCount(): Promise<number> {
   return mockApprovals.length
 }
-

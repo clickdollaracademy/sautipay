@@ -108,4 +108,3 @@ export async function getPendingRefundsCount(): Promise<number> {
   // Count pending refunds
   return mockRefunds.filter((refund) => refund.status === "Pending").length
 }
-

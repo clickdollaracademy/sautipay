@@ -95,4 +95,3 @@ const testimonials = [
       "Customer support has been outstanding. Any time we've had questions, the team responds quickly. The refund processing feature alone has saved us countless hours of manual work.",
   },
 ]
-

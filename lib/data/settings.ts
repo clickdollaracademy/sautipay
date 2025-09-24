@@ -38,14 +38,14 @@ interface Settings {
 // Mock settings data
 const mockSettings: Settings = {
   general: {
-    companyName: "Sauti Pay",
-    contactEmail: "contact@sautipay.com",
+    companyName: "Sauti Travels",
+    contactEmail: "contact@sautitravels.com",
     defaultCurrency: "USD",
   },
   branding: {
     logoUrl: "/logo.png",
-    headerText: "Sauti Pay - Travel Insurance",
-    footerText: "© 2023 Sauti Pay. All rights reserved.",
+    headerText: "Sauti Travels - Travel Insurance",
+    footerText: "© 2023 Sauti Travels. All rights reserved.",
     additionalNotes: "Thank you for your business.",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
@@ -117,4 +117,3 @@ export async function updateSettings(newSettings: Partial<Settings>): Promise<Se
 
   return updatedSettings
 }
-

@@ -136,4 +136,3 @@ export async function getRecentCompanies(limit = 5): Promise<Company[]> {
     .sort((a, b) => new Date(b.onboardingDate).getTime() - new Date(a.onboardingDate).getTime())
     .slice(0, limit)
 }
-

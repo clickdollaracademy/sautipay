@@ -33,11 +33,6 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
-                Pricing
-              </Link>
-            </li>
-            <li>
               <Link href="/faq" className="text-gray-300 hover:text-white transition-colors">
                 FAQ
               </Link>
@@ -105,4 +100,3 @@ export function SiteFooter() {
     </footer>
   )
 }
-

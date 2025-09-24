@@ -88,4 +88,3 @@ export async function getTodaySettlementSum(): Promise<number> {
   // For demo purposes, we'll return 0
   return 0
 }
-

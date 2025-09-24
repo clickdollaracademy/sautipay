@@ -233,4 +233,3 @@ export function ExchangeRatesConfig() {
     </Card>
   )
 }
-

@@ -4,8 +4,8 @@ export async function GET() {
   // Mock settings data
   const settings = {
     general: {
-      companyName: "Sauti Pay",
-      contactEmail: "info@sautipay.com",
+      companyName: "Sauti Travels", // Updated company name from Sauti Pay to Sauti Travels
+      contactEmail: "info@sautitravels.com", // Updated email domain from sautipay.com to sautitravels.com
       defaultCurrency: "USD",
     },
     branding: {
@@ -59,4 +59,3 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: false, message: "Failed to update settings" }, { status: 500 })
   }
 }
-

@@ -44,4 +44,3 @@ function getExchangeRate(from: string, to: string): number {
 
   return rates[to] / rates[from]
 }
-

@@ -68,4 +68,3 @@ const faqs = [
       "The typical implementation timeline is 2-4 weeks, depending on your specific requirements and the complexity of integrations. Our dedicated onboarding team provides comprehensive training and support throughout the process, including data migration, system configuration, and user training.",
   },
 ]
-

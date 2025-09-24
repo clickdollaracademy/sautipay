@@ -458,4 +458,3 @@ export function SettlementDetails() {
     </div>
   )
 }
-

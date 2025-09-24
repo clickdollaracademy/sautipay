@@ -24,7 +24,7 @@ export function LandingHero() {
               Revolutionizing Travel Finance Management
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl mt-4">
-              Streamline your travel insurance, refunds, and commissions with Sauti Pay. Experience the power of
+              Streamline your travel insurance, refunds, and commissions with Sauti Travels. Experience the power of
               efficient, effective, and everywhere accessible financial solutions.
             </p>
           </div>
@@ -61,4 +61,3 @@ export function LandingHero() {
     </section>
   )
 }
-

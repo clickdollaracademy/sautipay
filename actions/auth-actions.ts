@@ -50,4 +50,3 @@ export async function logout() {
   cookies().delete("user_role")
   redirect("/login")
 }
-

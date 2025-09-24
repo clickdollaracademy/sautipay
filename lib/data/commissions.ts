@@ -136,4 +136,3 @@ export async function getTotalCommissionsPending(): Promise<number> {
     .filter((commission) => commission.status === "Pending")
     .reduce((total, commission) => total + commission.amount, 0)
 }
-

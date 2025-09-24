@@ -32,4 +32,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to fetch transactions" }, { status: 500 })
   }
 }
-

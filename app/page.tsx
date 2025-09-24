@@ -20,22 +20,28 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 relative">
             <div className="flex flex-col items-center text-center">
               <div className="w-full max-w-3xl mx-auto">
-                <h1 className="text-4xl md:text-5xl font-bold mb-8">Simplify Your Travel Insurance Management</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-8">
+                  Protect Your Journey with Comprehensive Travel Insurance
+                </h1>
                 <p className="text-xl mb-10 max-w-2xl mx-auto">
-                  Streamline Your Travel Insurance Operations with Our Comprehensive Platform Designed for Insurance
-                  Companies & Travel Insurance Agencies
+                  Get protected against medical emergencies, trip cancellations, baggage loss, and more with our
+                  easy-to-use booking system. Instant coverage for your upcoming trip.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-5 justify-center">
-                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
-                    Get Started
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="bg-transparent border-white text-white hover:bg-white/10"
-                  >
-                    Book a Demo
-                  </Button>
+                  <Link href="/book-travel-policy">
+                    <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
+                      Book Travel Policy
+                    </Button>
+                  </Link>
+                  <Link href="/claims">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="bg-transparent border-white text-white hover:bg-white/10"
+                    >
+                      File a Claim
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -46,21 +52,19 @@ export default function LandingPage() {
         <section className="py-16 bg-white" id="features">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 text-[#002B5B]">
-                Powerful Features for Travel Insurance Agencies
-              </h2>
+              <h2 className="text-3xl font-bold mb-4 text-[#002B5B]">Comprehensive Travel Insurance Coverage</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Our platform offers everything you need to manage travel insurance efficiently.
+                Travel with confidence knowing you're protected against unexpected events during your journey.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Feature 1 */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+            <div className="grid md:grid-cols-4 gap-8">
+              {/* Feature 1 - Medical Coverage */}
+              <div className="bg-blue-50 p-6 rounded-lg text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-blue-600"
+                    className="h-8 w-8 text-blue-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -69,46 +73,43 @@ export default function LandingPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Policy Management</h3>
-                <p className="text-gray-600">
-                  Easily manage all your travel insurance policies in one place with our intuitive dashboard.
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Medical Coverage</h3>
+                <p className="text-gray-600 mb-2">Up to $100,000</p>
+                <p className="text-sm text-gray-500">
+                  Emergency medical expenses, hospital stays, and medical evacuation coverage worldwide.
                 </p>
               </div>
 
-              {/* Feature 2 */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              {/* Feature 2 - Trip Cancellation */}
+              <div className="bg-green-50 p-6 rounded-lg text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-green-600"
+                    className="h-8 w-8 text-green-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Commission Tracking</h3>
-                <p className="text-gray-600">
-                  Track your commissions in real-time and ensure you get paid for every policy sold.
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Trip Cancellation</h3>
+                <p className="text-gray-600 mb-2">100% Coverage</p>
+                <p className="text-sm text-gray-500">
+                  Full reimbursement for non-refundable trip costs due to covered reasons.
                 </p>
               </div>
 
-              {/* Feature 3 */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+              {/* Feature 3 - Baggage Protection */}
+              <div className="bg-purple-50 p-6 rounded-lg text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-purple-600"
+                    className="h-8 w-8 text-purple-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -117,13 +118,39 @@ export default function LandingPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Automated Settlements</h3>
-                <p className="text-gray-600">
-                  Automate your settlement process and reduce manual work with our powerful settlement engine.
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Baggage Protection</h3>
+                <p className="text-gray-600 mb-2">Up to $2,500</p>
+                <p className="text-sm text-gray-500">
+                  Coverage for lost, stolen, or damaged luggage and personal belongings.
+                </p>
+              </div>
+
+              {/* Feature 4 - Worldwide Coverage */}
+              <div className="bg-orange-50 p-6 rounded-lg text-center">
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8 text-orange-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Worldwide Coverage</h3>
+                <p className="text-gray-600 mb-2">24/7 Support</p>
+                <p className="text-sm text-gray-500">
+                  Global coverage with round-the-clock emergency assistance wherever you travel.
                 </p>
               </div>
             </div>
@@ -134,9 +161,9 @@ export default function LandingPage() {
         <section className="py-12 bg-blue-50 text-gray-800" id="testimonials">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-3 text-[#002B5B]">What Our Customers Say</h2>
+              <h2 className="text-2xl font-bold mb-3 text-[#002B5B]">What Our Travelers Say</h2>
               <p className="text-gray-600 max-w-2xl mx-auto text-sm">
-                Hear from Travel Insurance Agencies that have transformed their insurance operations with Sauti Pay.
+                Hear from travelers who have experienced peace of mind with our comprehensive travel insurance coverage.
               </p>
             </div>
 
@@ -149,12 +176,12 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-[#002B5B]">Sarah Johnson</h4>
-                    <p className="text-xs text-gray-500">CEO, TravelRight Insurance Agency</p>
+                    <p className="text-xs text-gray-500">Business Traveler</p>
                   </div>
                 </div>
                 <p className="text-sm text-gray-700 leading-snug">
-                  "Sauti Pay has revolutionized how we handle travel insurance. Our processing time has been reduced by
-                  70% and our commission tracking is now flawless."
+                  "When my flight was cancelled due to weather, the trip cancellation coverage saved me thousands. The
+                  claim process was smooth and I was reimbursed quickly."
                 </p>
               </div>
 
@@ -166,12 +193,12 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-[#002B5B]">Michael Chen</h4>
-                    <p className="text-xs text-gray-500">Operations Manager, Global Travel Insurance</p>
+                    <p className="text-xs text-gray-500">Adventure Traveler</p>
                   </div>
                 </div>
                 <p className="text-sm text-gray-700 leading-snug">
-                  "The automated settlement feature alone has saved us countless hours of manual work. The platform is
-                  intuitive and our agents love using it."
+                  "I had a medical emergency while hiking in Nepal. The 24/7 support team arranged medical evacuation
+                  and covered all expenses. Truly lifesaving coverage!"
                 </p>
               </div>
 
@@ -183,12 +210,12 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-[#002B5B]">Lisa Okoye</h4>
-                    <p className="text-xs text-gray-500">Director, Sunshine Travel Insurance</p>
+                    <p className="text-xs text-gray-500">Family Traveler</p>
                   </div>
                 </div>
                 <p className="text-sm text-gray-700 leading-snug">
-                  "Since implementing Sauti Pay, our refund processing has become seamless. Our customers are happier
-                  and our staff can focus on selling rather than paperwork."
+                  "Our luggage was lost for 3 days during our family vacation. The baggage protection coverage helped us
+                  buy essentials and we were fully reimbursed."
                 </p>
               </div>
             </div>
@@ -200,45 +227,45 @@ export default function LandingPage() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 text-[#002B5B]">Frequently Asked Questions</h2>
-              <p className="text-gray-600 max-w-3xl mx-auto">Find answers to common questions about our platform.</p>
+              <p className="text-gray-600 max-w-3xl mx-auto">
+                Find answers to common questions about travel insurance coverage.
+              </p>
             </div>
 
             <div className="max-w-3xl mx-auto">
               {/* FAQ Item 1 */}
               <div className="mb-6 border-b pb-6">
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">How does the commission tracking work?</h3>
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">What does travel insurance cover?</h3>
                 <p className="text-gray-600">
-                  Our platform automatically calculates commissions based on your agreements with insurance providers.
-                  You can view real-time reports and track pending payments.
+                  Our comprehensive travel insurance covers medical emergencies, trip cancellations, baggage loss,
+                  travel delays, and emergency evacuation. Coverage varies by plan selected.
                 </p>
               </div>
 
               {/* FAQ Item 2 */}
               <div className="mb-6 border-b pb-6">
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">
-                  Can I customize the platform for my agency?
-                </h3>
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">When should I purchase travel insurance?</h3>
                 <p className="text-gray-600">
-                  Yes, Sauti Pay offers customization options to match your branding and workflow requirements. Our
-                  enterprise plan includes advanced customization features.
+                  We recommend purchasing travel insurance as soon as you book your trip. This ensures maximum coverage
+                  including pre-existing medical conditions and cancel-for-any-reason benefits.
                 </p>
               </div>
 
               {/* FAQ Item 3 */}
               <div className="mb-6 border-b pb-6">
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">How secure is my data on Sauti Pay?</h3>
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">How do I file a claim?</h3>
                 <p className="text-gray-600">
-                  We implement bank-level security measures including encryption, secure authentication, and regular
-                  security audits to ensure your data is always protected.
+                  Filing a claim is easy through our online portal. Simply provide your policy details, incident
+                  information, and supporting documents. Our team will review and process your claim promptly.
                 </p>
               </div>
 
               {/* FAQ Item 4 */}
               <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">What kind of support do you offer?</h3>
+                <h3 className="text-xl font-semibold mb-2 text-[#002B5B]">Is coverage available worldwide?</h3>
                 <p className="text-gray-600">
-                  We provide email support for all plans, with priority support and dedicated account managers available
-                  for Professional and Enterprise plans respectively.
+                  Yes, our travel insurance provides worldwide coverage with 24/7 emergency assistance. Whether you're
+                  traveling domestically or internationally, you're protected.
                 </p>
               </div>
             </div>
@@ -248,24 +275,24 @@ export default function LandingPage() {
         {/* CTA Section */}
         <section className="py-16 bg-[#002B5B] text-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-6">Ready to transform your travel insurance operations?</h2>
+            <h2 className="text-3xl font-bold mb-6">Ready to protect your next adventure?</h2>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
-              Join hundreds of Travel Insurance Agencies already using Sauti Pay to streamline their insurance
-              processes.
+              Join thousands of travelers who trust us to protect their journeys. Get instant coverage and travel with
+              confidence.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/register">
+              <Link href="/book-travel-policy">
                 <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white">
-                  Start Your Free Trial
+                  Get Travel Insurance Now
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/claims">
                 <Button
                   size="lg"
                   variant="outline"
                   className="bg-transparent border-white text-white hover:bg-white/10"
                 >
-                  Login
+                  File a Claim
                 </Button>
               </Link>
             </div>
@@ -279,55 +306,55 @@ export default function LandingPage() {
               <div>
                 <h3 className="text-xl font-semibold mb-4">Sauti Pay</h3>
                 <p className="text-gray-400">
-                  Simplifying travel insurance management for Travel Insurance Agencies worldwide.
+                  Protecting travelers worldwide with comprehensive travel insurance coverage and 24/7 support.
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold mb-4">Product</h4>
+                <h4 className="font-semibold mb-4">Coverage</h4>
                 <ul className="space-y-2">
                   <li>
                     <Link href="#features" className="text-gray-400 hover:text-white">
-                      Features
+                      Medical Coverage
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Pricing
+                    <Link href="#features" className="text-gray-400 hover:text-white">
+                      Trip Cancellation
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Integrations
+                    <Link href="#features" className="text-gray-400 hover:text-white">
+                      Baggage Protection
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      API
+                    <Link href="#features" className="text-gray-400 hover:text-white">
+                      Emergency Assistance
                     </Link>
                   </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold mb-4">Resources</h4>
+                <h4 className="font-semibold mb-4">Support</h4>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Documentation
+                    <Link href="/claims" className="text-gray-400 hover:text-white">
+                      File a Claim
                     </Link>
                   </li>
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Guides
+                      Track Claim
                     </Link>
                   </li>
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Support
+                      Emergency Hotline
                     </Link>
                   </li>
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Blog
+                      Help Center
                     </Link>
                   </li>
                 </ul>
@@ -342,12 +369,12 @@ export default function LandingPage() {
                   </li>
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Careers
+                      Contact
                     </Link>
                   </li>
                   <li>
                     <Link href="#testimonials" className="text-gray-400 hover:text-white">
-                      Testimonials
+                      Reviews
                     </Link>
                   </li>
                   <li>
@@ -367,4 +394,3 @@ export default function LandingPage() {
     </div>
   )
 }
-

@@ -34,4 +34,3 @@ export function TabNavigation({ items }: TabNavigationProps) {
     </nav>
   )
 }
-

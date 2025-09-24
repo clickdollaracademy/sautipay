@@ -62,4 +62,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "Failed to create broker" }, { status: 500 })
   }
 }
-

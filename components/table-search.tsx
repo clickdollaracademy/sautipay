@@ -101,4 +101,3 @@ export function TableSearch({ onSearch, onReset, isLoading = false }: TableSearc
     </div>
   )
 }
-

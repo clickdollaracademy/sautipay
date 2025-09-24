@@ -144,4 +144,3 @@ export async function getTransactions(filters: TransactionFilters = {}): Promise
     },
   }
 }
-

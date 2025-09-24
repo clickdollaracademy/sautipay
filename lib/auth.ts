@@ -68,4 +68,3 @@ export function isAuthenticated() {
 export function isAdmin() {
   return getUserRole() === "owner" || getUserRole() === "admin"
 }
-

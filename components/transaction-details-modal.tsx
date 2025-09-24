@@ -50,4 +50,3 @@ export function TransactionDetailsModal({ isOpen, onClose, transactions, totalAm
     </Dialog>
   )
 }
-

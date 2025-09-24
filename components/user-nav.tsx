@@ -145,4 +145,3 @@ export function UserNav({ isOwner = false }: UserNavProps) {
     </DropdownMenu>
   )
 }
-

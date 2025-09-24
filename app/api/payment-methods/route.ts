@@ -45,4 +45,3 @@ export async function GET() {
     return NextResponse.json({ success: false, message: "Failed to fetch payment methods" }, { status: 500 })
   }
 }
-

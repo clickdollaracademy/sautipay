@@ -21,4 +21,3 @@ export async function updateCommissionStatus(id: string, status: "Paid") {
     }
   }
 }
-

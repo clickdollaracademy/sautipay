@@ -423,4 +423,3 @@ export function CompanyOnboardingForm() {
     </form>
   )
 }
-

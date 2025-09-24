@@ -290,4 +290,3 @@ export function CommissionTable() {
     </div>
   )
 }
-

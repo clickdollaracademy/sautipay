@@ -51,4 +51,3 @@ export async function updateRefundStatus(id: string, status: "Approved" | "Rejec
     }
   }
 }
-

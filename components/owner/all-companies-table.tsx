@@ -248,4 +248,3 @@ export function AllCompaniesTable() {
     </div>
   )
 }
-

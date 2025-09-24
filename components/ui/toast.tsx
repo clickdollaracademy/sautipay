@@ -35,4 +35,3 @@ export const toast = (toast: Toast) => {
   const { toast: addToast } = useToast()
   addToast(toast)
 }
-

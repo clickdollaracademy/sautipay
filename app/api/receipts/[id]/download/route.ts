@@ -19,4 +19,3 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ success: false, message: "Failed to generate receipt download" }, { status: 500 })
   }
 }
-

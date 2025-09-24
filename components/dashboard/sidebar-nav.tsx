@@ -49,7 +49,7 @@ export function SidebarNav() {
   return (
     <nav className="w-64 min-h-screen border-r bg-background px-4 py-8">
       <Link href="/" className="flex items-center gap-2 mb-8">
-        <span className="font-bold text-xl">Sauti Pay</span>
+        <span className="font-bold text-xl">Sauti Travels</span>
       </Link>
       <div className="space-y-2">
         {sidebarNavItems.map((item) => (
@@ -69,4 +69,3 @@ export function SidebarNav() {
     </nav>
   )
 }
-

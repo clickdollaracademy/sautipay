@@ -94,4 +94,3 @@ export function DataTablePagination({ pagination, onPageChange, onPageSizeChange
     </div>
   )
 }
-

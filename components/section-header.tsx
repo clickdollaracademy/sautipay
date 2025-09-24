@@ -21,4 +21,3 @@ export function SectionHeader({ title, isActive, onClick }: SectionHeaderProps) 
     </button>
   )
 }
-

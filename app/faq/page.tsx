@@ -7,15 +7,15 @@ export default function FAQPage() {
 
       <div className="space-y-6">
         <div className="border rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-semibold mb-2">What is Sauti Pay?</h3>
+          <h3 className="text-xl font-semibold mb-2">What is Sauti Travels?</h3>
           <p className="text-gray-700">
-            Sauti Pay is a comprehensive financial platform that enables businesses to process payments, manage
+            Sauti Travels is a comprehensive financial platform that enables businesses to process payments, manage
             settlements, handle commissions, and process refunds all in one place.
           </p>
         </div>
 
         <div className="border rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-semibold mb-2">How do I get started with Sauti Pay?</h3>
+          <h3 className="text-xl font-semibold mb-2">How do I get started with Sauti Travels?</h3>
           <p className="text-gray-700">
             Getting started is easy. Simply contact our sales team through the contact page, and we'll guide you through
             the onboarding process. We'll help set up your account, integrate our payment solutions, and provide
@@ -49,7 +49,7 @@ export default function FAQPage() {
         </div>
 
         <div className="border rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-semibold mb-2">Is Sauti Pay secure?</h3>
+          <h3 className="text-xl font-semibold mb-2">Is Sauti Travels secure?</h3>
           <p className="text-gray-700">
             Yes, security is our top priority. We use industry-standard encryption, comply with PCI DSS requirements,
             and implement multiple layers of security to protect your data and transactions.
@@ -57,7 +57,7 @@ export default function FAQPage() {
         </div>
 
         <div className="border rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-semibold mb-2">What fees does Sauti Pay charge?</h3>
+          <h3 className="text-xl font-semibold mb-2">What fees does Sauti Travels charge?</h3>
           <p className="text-gray-700">
             Our fee structure is transparent and competitive. We charge a small percentage per transaction, with no
             hidden fees. Please visit our pricing page or contact our sales team for detailed information about our
@@ -86,4 +86,3 @@ export default function FAQPage() {
     </div>
   )
 }
-

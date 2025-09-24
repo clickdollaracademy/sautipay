@@ -440,4 +440,3 @@ export function CommissionSummary() {
     </div>
   )
 }
-

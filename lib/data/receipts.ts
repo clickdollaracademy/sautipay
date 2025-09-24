@@ -85,4 +85,3 @@ export async function getReceipts(params: ReceiptQueryParams): Promise<Paginated
     },
   }
 }
-

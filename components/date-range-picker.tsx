@@ -51,4 +51,3 @@ export function DateRangePicker({ onSearch, onReset }: DateRangePickerProps) {
     </div>
   )
 }
-

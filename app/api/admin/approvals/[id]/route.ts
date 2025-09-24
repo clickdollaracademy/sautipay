@@ -68,4 +68,3 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     return NextResponse.json({ success: false, message: "Failed to update approval" }, { status: 500 })
   }
 }
-

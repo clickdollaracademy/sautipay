@@ -67,4 +67,3 @@ export function MainNav({ className, activeSection, setActiveSection, ...props }
     </nav>
   )
 }
-

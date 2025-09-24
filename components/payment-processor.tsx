@@ -187,4 +187,3 @@ export function PaymentProcessor({ amount, currency, onPaymentComplete }: Paymen
     </Card>
   )
 }
-

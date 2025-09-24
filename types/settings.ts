@@ -5,4 +5,3 @@ export interface DeductibleFee {
   enabled: boolean
   currency: string
 }
-

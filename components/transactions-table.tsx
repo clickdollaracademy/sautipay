@@ -235,4 +235,3 @@ export function TransactionsTable() {
     </Card>
   )
 }
-

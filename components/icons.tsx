@@ -36,4 +36,3 @@ export const Icons = {
   check: Check,
   close: X,
 }
-

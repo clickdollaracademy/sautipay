@@ -68,4 +68,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: false, message: "Failed to fetch payment history" }, { status: 500 })
   }
 }
-

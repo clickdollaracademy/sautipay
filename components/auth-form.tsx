@@ -94,4 +94,3 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
     </div>
   )
 }
-

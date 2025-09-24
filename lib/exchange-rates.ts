@@ -16,4 +16,3 @@ export function convertCurrency(amount: number, fromCurrency: string, toCurrency
 
   return (amount / fromRate) * toRate
 }
-

@@ -75,8 +75,8 @@ export default function LoginPage() {
       {/* Left Panel - Blue Background */}
       <div className="hidden md:flex md:w-1/2 bg-[#002B5B] items-center justify-center">
         <Link href="/" className="flex flex-col items-center text-center p-8">
-          <h1 className="text-4xl font-bold text-white mb-3">Sauti Pay</h1>
-          <p className="text-white text-lg italic">Travel insurance simplified...</p>
+          <h1 className="text-4xl font-bold text-white mb-3">Sauti Travels</h1>
+          <p className="text-white text-lg italic">Fast, Reliable & Convenient Travel Protection</p>
         </Link>
       </div>
 
@@ -86,8 +86,8 @@ export default function LoginPage() {
           {/* Mobile Logo (visible only on small screens) */}
           <div className="md:hidden text-center mb-8">
             <Link href="/">
-              <h1 className="text-3xl font-bold text-[#002B5B] mb-1">Sauti Pay</h1>
-              <p className="text-gray-600 text-sm italic">Travel insurance simplified...</p>
+              <h1 className="text-3xl font-bold text-[#002B5B] mb-1">Sauti Travels</h1>
+              <p className="text-gray-600 text-sm italic">Fast, Reliable & Convenient Travel Protection</p>
             </Link>
           </div>
 
@@ -223,4 +223,3 @@ export default function LoginPage() {
     </div>
   )
 }
-

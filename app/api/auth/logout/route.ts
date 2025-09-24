@@ -17,4 +17,3 @@ export async function POST() {
     return NextResponse.json({ success: false, message: "Logout failed" }, { status: 500 })
   }
 }
-

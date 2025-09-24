@@ -61,8 +61,8 @@ export default function ContactPage() {
               <Mail className="w-5 h-5 mt-1 text-primary" />
               <div>
                 <h3 className="font-medium">Email</h3>
-                <p className="text-gray-700">support@sautipay.com</p>
-                <p className="text-gray-700">sales@sautipay.com</p>
+                <p className="text-gray-700">support@sautitravels.com</p>
+                <p className="text-gray-700">sales@sautitravels.com</p>
               </div>
             </div>
 
@@ -80,7 +80,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-medium">Office</h3>
                 <p className="text-gray-700">
-                  Sauti Pay Headquarters
+                  Sauti Travels Headquarters
                   <br />
                   Plot 2132, Doctors Lane
                   <br />
@@ -170,4 +170,3 @@ export default function ContactPage() {
     </div>
   )
 }
-

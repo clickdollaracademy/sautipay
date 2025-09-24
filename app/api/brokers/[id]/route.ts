@@ -65,4 +65,3 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ success: false, message: "Failed to delete broker" }, { status: 500 })
   }
 }
-

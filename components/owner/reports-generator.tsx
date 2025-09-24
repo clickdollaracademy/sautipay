@@ -455,4 +455,3 @@ export function ReportsGenerator() {
     </div>
   )
 }
-
