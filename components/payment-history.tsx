@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,27 @@ interface Payment {
   status: "Successful" | "Failed"
 }
 
+const MOCK_PAYMENTS: Payment[] = [
+  { id: "PAY001", date: "2023-06-15", amount: 1000, currency: "USD", method: "Stripe", status: "Successful" },
+  { id: "PAY002", date: "2023-06-16", amount: 750, currency: "EUR", method: "Visa", status: "Successful" },
+  {
+    id: "PAY003",
+    date: "2023-06-17",
+    amount: 500,
+    currency: "GBP",
+    method: "MTN Mobile Money",
+    status: "Failed",
+  },
+  {
+    id: "PAY004",
+    date: "2023-06-18",
+    amount: 100000,
+    currency: "JPY",
+    method: "Airtel Money",
+    status: "Successful",
+  },
+]
+
 export function PaymentHistory() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -26,31 +47,8 @@ export function PaymentHistory() {
     const fetchPayments = async () => {
       setIsLoading(true)
       try {
-        // Simulating API call
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        const mockPayments: Payment[] = [
-          { id: "PAY001", date: "2023-06-15", amount: 1000, currency: "USD", method: "Stripe", status: "Successful" },
-          { id: "PAY002", date: "2023-06-16", amount: 750, currency: "EUR", method: "Visa", status: "Successful" },
-          {
-            id: "PAY003",
-            date: "2023-06-17",
-            amount: 500,
-            currency: "GBP",
-            method: "MTN Mobile Money",
-            status: "Failed",
-          },
-          {
-            id: "PAY004",
-            date: "2023-06-18",
-            amount: 100000,
-            currency: "JPY",
-            method: "Airtel Money",
-            status: "Successful",
-          },
-        ]
-
-        setPayments(mockPayments)
+        await new Promise((resolve) => setTimeout(resolve, 800))
+        setPayments(MOCK_PAYMENTS)
       } catch (err) {
         setError("Failed to fetch payment history. Please try again later.")
       } finally {
@@ -60,6 +58,17 @@ export function PaymentHistory() {
 
     fetchPayments()
   }, [])
+
+  const handlePaymentSelect = useCallback((payment: Payment) => {
+    setSelectedPayment(payment)
+  }, [])
+
+  const formattedPayments = useMemo(() => {
+    return payments.map((payment) => ({
+      ...payment,
+      formattedAmount: `${payment.currency} ${payment.amount.toFixed(2)}`,
+    }))
+  }, [payments])
 
   if (isLoading) {
     return (
@@ -110,19 +119,17 @@ export function PaymentHistory() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => (
+            {formattedPayments.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>{payment.date}</TableCell>
                 <TableCell>{payment.id}</TableCell>
-                <TableCell>
-                  {payment.currency} {payment.amount.toFixed(2)}
-                </TableCell>
+                <TableCell>{payment.formattedAmount}</TableCell>
                 <TableCell>{payment.method}</TableCell>
                 <TableCell>{payment.status}</TableCell>
                 <TableCell>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => setSelectedPayment(payment)}>
+                      <Button variant="outline" size="sm" onClick={() => handlePaymentSelect(payment)}>
                         View Details
                       </Button>
                     </DialogTrigger>

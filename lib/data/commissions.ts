@@ -9,12 +9,18 @@ interface Commission {
   status: "Pending" | "Paid"
   period: string
   currency: string
+  companyId?: string
 }
 
 interface CommissionQueryParams {
   page: number
   limit: number
+  search?: string
+  startDate?: string
+  endDate?: string
   status?: string
+  currency?: string
+  companyId?: string
 }
 
 interface PaginatedResponse<T> {
@@ -92,14 +98,38 @@ const mockCommissions: Commission[] = [
 ]
 
 export async function getCommissions(params: CommissionQueryParams): Promise<PaginatedResponse<Commission>> {
-  const { page, limit, status } = params
+  const { page, limit, search, startDate, endDate, status, currency, companyId } = params
 
-  // Filter commissions based on status
   let filteredCommissions = [...mockCommissions]
 
+  // Apply search filter
+  if (search) {
+    filteredCommissions = filteredCommissions.filter(
+      (commission) =>
+        commission.broker.toLowerCase().includes(search.toLowerCase()) ||
+        commission.code.toLowerCase().includes(search.toLowerCase()) ||
+        commission.id.toLowerCase().includes(search.toLowerCase()),
+    )
+  }
+
+  // Apply status filter
   if (status) {
     filteredCommissions = filteredCommissions.filter(
       (commission) => commission.status.toLowerCase() === status.toLowerCase(),
+    )
+  }
+
+  // Apply currency filter
+  if (currency) {
+    filteredCommissions = filteredCommissions.filter(
+      (commission) => commission.currency.toLowerCase() === currency.toLowerCase(),
+    )
+  }
+
+  // Apply companyId filter
+  if (companyId) {
+    filteredCommissions = filteredCommissions.filter(
+      (commission) => commission.companyId?.toLowerCase() === companyId.toLowerCase(),
     )
   }
 

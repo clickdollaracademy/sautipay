@@ -1,6 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import type React from "react"
+
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -32,115 +34,127 @@ interface Company {
   usersCount: number
 }
 
+const MOCK_COMPANIES: Company[] = [
+  {
+    id: "1",
+    name: "Acme Inc",
+    industry: "Technology",
+    status: "Active",
+    joinDate: "2023-05-15",
+    plan: "Enterprise",
+    usersCount: 156,
+  },
+  {
+    id: "2",
+    name: "Globex Corp",
+    industry: "Healthcare",
+    status: "Active",
+    joinDate: "2023-06-22",
+    plan: "Professional",
+    usersCount: 87,
+  },
+  {
+    id: "3",
+    name: "Umbrella LLC",
+    industry: "Insurance",
+    status: "Pending",
+    joinDate: "2023-08-01",
+    plan: "Standard",
+    usersCount: 42,
+  },
+  {
+    id: "4",
+    name: "Stark Industries",
+    industry: "Manufacturing",
+    status: "Active",
+    joinDate: "2023-07-12",
+    plan: "Enterprise",
+    usersCount: 215,
+  },
+  {
+    id: "5",
+    name: "Wayne Enterprises",
+    industry: "Technology",
+    status: "Inactive",
+    joinDate: "2023-04-05",
+    plan: "Professional",
+    usersCount: 0,
+  },
+  {
+    id: "6",
+    name: "Oscorp",
+    industry: "Biotechnology",
+    status: "Active",
+    joinDate: "2023-03-18",
+    plan: "Standard",
+    usersCount: 93,
+  },
+  {
+    id: "7",
+    name: "Daily Planet",
+    industry: "Media",
+    status: "Suspended",
+    joinDate: "2023-01-30",
+    plan: "Starter",
+    usersCount: 68,
+  },
+  {
+    id: "8",
+    name: "LexCorp",
+    industry: "Energy",
+    status: "Active",
+    joinDate: "2023-02-14",
+    plan: "Enterprise",
+    usersCount: 124,
+  },
+  {
+    id: "9",
+    name: "Cyberdyne Systems",
+    industry: "Technology",
+    status: "Active",
+    joinDate: "2023-07-01",
+    plan: "Professional",
+    usersCount: 76,
+  },
+  {
+    id: "10",
+    name: "Massive Dynamics",
+    industry: "Research",
+    status: "Pending",
+    joinDate: "2023-08-05",
+    plan: "Enterprise",
+    usersCount: 53,
+  },
+]
+
 export function CompaniesTable() {
   const [companies, setCompanies] = useState<Company[]>([])
-  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const { toast } = useToast()
 
+  const filteredCompanies = useMemo(() => {
+    if (!companies.length) return []
+
+    const searchLower = searchQuery.toLowerCase()
+    return companies.filter((company) => {
+      const matchesSearch =
+        searchLower === "" ||
+        company.name.toLowerCase().includes(searchLower) ||
+        company.industry.toLowerCase().includes(searchLower)
+
+      const matchesStatus = statusFilter === "all" || company.status.toLowerCase() === statusFilter.toLowerCase()
+
+      return matchesSearch && matchesStatus
+    })
+  }, [companies, searchQuery, statusFilter])
+
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        const fetchedCompanies = [
-          {
-            id: "1",
-            name: "Acme Inc",
-            industry: "Technology",
-            status: "Active",
-            joinDate: "2023-05-15",
-            plan: "Enterprise",
-            usersCount: 156,
-          },
-          {
-            id: "2",
-            name: "Globex Corp",
-            industry: "Healthcare",
-            status: "Active",
-            joinDate: "2023-06-22",
-            plan: "Professional",
-            usersCount: 87,
-          },
-          {
-            id: "3",
-            name: "Umbrella LLC",
-            industry: "Insurance",
-            status: "Pending",
-            joinDate: "2023-08-01",
-            plan: "Standard",
-            usersCount: 42,
-          },
-          {
-            id: "4",
-            name: "Stark Industries",
-            industry: "Manufacturing",
-            status: "Active",
-            joinDate: "2023-07-12",
-            plan: "Enterprise",
-            usersCount: 215,
-          },
-          {
-            id: "5",
-            name: "Wayne Enterprises",
-            industry: "Technology",
-            status: "Inactive",
-            joinDate: "2023-04-05",
-            plan: "Professional",
-            usersCount: 0,
-          },
-          {
-            id: "6",
-            name: "Oscorp",
-            industry: "Biotechnology",
-            status: "Active",
-            joinDate: "2023-03-18",
-            plan: "Standard",
-            usersCount: 93,
-          },
-          {
-            id: "7",
-            name: "Daily Planet",
-            industry: "Media",
-            status: "Suspended",
-            joinDate: "2023-01-30",
-            plan: "Starter",
-            usersCount: 68,
-          },
-          {
-            id: "8",
-            name: "LexCorp",
-            industry: "Energy",
-            status: "Active",
-            joinDate: "2023-02-14",
-            plan: "Enterprise",
-            usersCount: 124,
-          },
-          {
-            id: "9",
-            name: "Cyberdyne Systems",
-            industry: "Technology",
-            status: "Active",
-            joinDate: "2023-07-01",
-            plan: "Professional",
-            usersCount: 76,
-          },
-          {
-            id: "10",
-            name: "Massive Dynamics",
-            industry: "Research",
-            status: "Pending",
-            joinDate: "2023-08-05",
-            plan: "Enterprise",
-            usersCount: 53,
-          },
-        ] as Company[]
-
-        setCompanies(fetchedCompanies)
-        setFilteredCompanies(fetchedCompanies)
+        await new Promise((resolve) => setTimeout(resolve, 800))
+        setCompanies(MOCK_COMPANIES)
       } catch (error) {
         console.error("Error fetching companies:", error)
       } finally {
@@ -151,30 +165,40 @@ export function CompaniesTable() {
     fetchCompanies()
   }, [])
 
-  useEffect(() => {
-    const filtered = companies.filter((company) => {
-      const matchesSearch =
-        company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        company.industry.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleSuspendCompany = useCallback(
+    (id: string, name: string) => {
+      setCompanies((prev) =>
+        prev.map((company) => (company.id === id ? { ...company, status: "Suspended" as const } : company)),
+      )
 
-      const matchesStatus = statusFilter === "all" || company.status.toLowerCase() === statusFilter.toLowerCase()
+      toast({
+        title: "Company Suspended",
+        description: `${name} has been suspended successfully.`,
+      })
+    },
+    [toast],
+  )
 
-      return matchesSearch && matchesStatus
-    })
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }, [])
 
-    setFilteredCompanies(filtered)
-  }, [searchQuery, statusFilter, companies])
+  const handleStatusFilterChange = useCallback((value: string) => {
+    setStatusFilter(value)
+  }, [])
 
-  const handleSuspendCompany = (id: string, name: string) => {
-    setCompanies(
-      companies.map((company) => (company.id === id ? { ...company, status: "Suspended" as const } : company)),
-    )
-
-    toast({
-      title: "Company Suspended",
-      description: `${name} has been suspended successfully.`,
-    })
-  }
+  const getBadgeVariant = useCallback((status: Company["status"]) => {
+    switch (status) {
+      case "Active":
+        return "success"
+      case "Pending":
+        return "default"
+      case "Suspended":
+        return "destructive"
+      default:
+        return "outline"
+    }
+  }, [])
 
   if (isLoading) {
     return (
@@ -195,10 +219,10 @@ export function CompaniesTable() {
           <Input
             placeholder="Search companies..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="max-w-md"
           />
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -245,19 +269,7 @@ export function CompaniesTable() {
                   <TableCell className="font-medium">{company.name}</TableCell>
                   <TableCell>{company.industry}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={
-                        company.status === "Active"
-                          ? "success"
-                          : company.status === "Pending"
-                            ? "default"
-                            : company.status === "Suspended"
-                              ? "destructive"
-                              : "outline"
-                      }
-                    >
-                      {company.status}
-                    </Badge>
+                    <Badge variant={getBadgeVariant(company.status)}>{company.status}</Badge>
                   </TableCell>
                   <TableCell>{company.joinDate}</TableCell>
                   <TableCell>{company.plan}</TableCell>

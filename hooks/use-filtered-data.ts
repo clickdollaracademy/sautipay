@@ -45,6 +45,91 @@ export function useFilteredData<T>({
   const fetchData = useCallback(async () => {
     setIsLoading(true)
     try {
+      if (process.env.NODE_ENV === "development") {
+        console.log(`[v0] Development mode: Using mock data for ${endpoint}`)
+
+        // Mock data for different endpoints
+        const mockData = {
+          settlements: [
+            {
+              id: "1",
+              date: "2023-06-15",
+              settledAmount: 4500,
+              bill: 2446,
+              transferredAmount: 5100,
+              transactionCount: 2,
+              status: "Completed",
+            },
+            {
+              id: "2",
+              date: "2023-06-16",
+              settledAmount: 10000,
+              bill: 3000,
+              transferredAmount: 7000,
+              transactionCount: 2,
+              status: "Completed",
+            },
+            {
+              id: "3",
+              date: "2023-06-17",
+              settledAmount: 7500,
+              bill: 2200,
+              transferredAmount: 5300,
+              transactionCount: 3,
+              status: "Pending",
+            },
+          ],
+          commissions: [
+            {
+              id: "1",
+              date: "2023-06-15",
+              amount: 250,
+              type: "Travel Insurance",
+              status: "Paid",
+            },
+            {
+              id: "2",
+              date: "2023-06-16",
+              amount: 180,
+              type: "Travel Insurance",
+              status: "Pending",
+            },
+          ],
+          transactions: [
+            {
+              id: "TRAN20240615001JAZZ",
+              date: "2023-06-15",
+              amount: 2500,
+              description: "Insurance premium payment",
+              status: "Completed",
+            },
+            {
+              id: "TRAN20240616002JAZZ",
+              date: "2023-06-16",
+              amount: 1800,
+              description: "Policy renewal",
+              status: "Completed",
+            },
+          ],
+        }
+
+        const endpointData = mockData[endpoint as keyof typeof mockData] || []
+
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
+        setData(endpointData as T[])
+        setPagination({
+          page: 1,
+          limit: initialLimit,
+          total: endpointData.length,
+          totalPages: Math.ceil(endpointData.length / initialLimit),
+        })
+
+        setIsLoading(false)
+        return
+      }
+
       const queryParams = new URLSearchParams({
         page: pagination.page.toString(),
         limit: pagination.limit.toString(),
@@ -56,10 +141,17 @@ export function useFilteredData<T>({
       if (filters.status) queryParams.append("status", filters.status)
       if (filters.currency) queryParams.append("currency", filters.currency)
 
+      console.log(`[v0] Fetching data from /api/${endpoint}`)
       const response = await fetch(`/api/${endpoint}?${queryParams.toString()}`)
 
       if (!response.ok) {
         throw new Error(`Failed to fetch data from ${endpoint}`)
+      }
+
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error(`[v0] Response is not JSON for ${endpoint}:`, await response.text())
+        throw new Error(`API returned non-JSON response for ${endpoint}`)
       }
 
       const result = await response.json()
@@ -89,12 +181,12 @@ export function useFilteredData<T>({
         totalPages: result.pagination.totalPages,
       })
     } catch (error) {
-      console.error("Error fetching data:", error)
+      console.error(`[v0] Error fetching data from ${endpoint}:`, error)
       setData([])
     } finally {
       setIsLoading(false)
     }
-  }, [endpoint, filters, pagination.page, pagination.limit])
+  }, [endpoint, filters, pagination.page, pagination.limit, initialLimit])
 
   useEffect(() => {
     fetchData()

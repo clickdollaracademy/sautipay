@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -99,62 +99,77 @@ export function CommissionTable() {
   const [isLoading, setIsLoading] = useState(false)
   const [deductibleFees, setDeductibleFees] = useState<DeductibleFee[]>([])
 
-  useEffect(() => {
-    // In a real application, you would fetch these from your backend or context
-    setDeductibleFees([
-      { name: "Taxes", type: "percentage", value: 5, enabled: true, currency: "USD" },
-      { name: "VAT", type: "percentage", value: 7.5, enabled: true, currency: "USD" },
-      { name: "Stamp Duty", type: "flat", value: 50, enabled: true, currency: "USD" },
-      { name: "Industrial Training Levy", type: "percentage", value: 1, enabled: true, currency: "USD" },
-    ])
+  const memoizedDeductibleFees = useMemo(
+    () =>
+      [
+        { name: "Taxes", type: "percentage", value: 5, enabled: true, currency: "USD" },
+        { name: "VAT", type: "percentage", value: 7.5, enabled: true, currency: "USD" },
+        { name: "Stamp Duty", type: "flat", value: 50, enabled: true, currency: "USD" },
+        { name: "Industrial Training Levy", type: "percentage", value: 1, enabled: true, currency: "USD" },
+      ] as DeductibleFee[],
+    [],
+  )
 
-    // Simulating fetching commission data
-    setCommissionData(
-      initialCommissionData.map((entry) => {
-        const netPremium = calculateNetPremium(entry.totalSales, deductibleFees, entry.currency)
-        return {
-          ...entry,
-          netPremium,
-          commissionAmount: (netPremium * entry.commissionRate) / 100,
-        }
-      }),
-    )
-    setFilteredData(commissionData)
+  const processedCommissionData = useMemo(() => {
+    return initialCommissionData.map((entry) => {
+      const netPremium = calculateNetPremium(entry.totalSales, memoizedDeductibleFees, entry.currency)
+      return {
+        ...entry,
+        netPremium,
+        commissionAmount: (netPremium * entry.commissionRate) / 100,
+      }
+    })
+  }, [memoizedDeductibleFees])
+
+  useEffect(() => {
+    setDeductibleFees(memoizedDeductibleFees)
+    setCommissionData(processedCommissionData)
+    setFilteredData(processedCommissionData)
+  }, [memoizedDeductibleFees, processedCommissionData])
+
+  const handleMarkAsPaid = useCallback((id: string) => {
+    setCommissionData((prev) => prev.map((entry) => (entry.id === id ? { ...entry, status: "Paid" } : entry)))
+  }, [])
+
+  const totalCommissionsPaid = useMemo(() => {
+    return commissionData.reduce((sum, entry) => sum + (entry.status === "Paid" ? entry.commissionAmount : 0), 0)
   }, [commissionData])
 
-  const handleMarkAsPaid = (id: string) => {
-    setCommissionData((prev) => prev.map((entry) => (entry.id === id ? { ...entry, status: "Paid" } : entry)))
-  }
-
-  const getTotalCommissionsPaid = () => {
-    return commissionData.reduce((sum, entry) => sum + (entry.status === "Paid" ? entry.commissionAmount : 0), 0)
-  }
-
-  const getTotalCommissionsPending = () => {
+  const totalCommissionsPending = useMemo(() => {
     return commissionData.reduce((sum, entry) => sum + (entry.status === "Pending" ? entry.commissionAmount : 0), 0)
-  }
+  }, [commissionData])
 
-  const handleFilter = ({ query, startDate, endDate }: FilterParams) => {
-    setIsLoading(true)
+  const handleFilter = useCallback(
+    ({ query, startDate, endDate }: FilterParams) => {
+      setIsLoading(true)
 
-    const filtered = commissionData.filter((item) => {
-      const matchesQuery =
-        query.toLowerCase() === "" ||
-        Object.values(item).some((value) => value.toString().toLowerCase().includes(query.toLowerCase()))
+      // Use requestAnimationFrame to defer heavy computation
+      requestAnimationFrame(() => {
+        const queryLower = query.toLowerCase()
+        const filtered = commissionData.filter((item) => {
+          const matchesQuery =
+            queryLower === "" ||
+            item.brokerName.toLowerCase().includes(queryLower) ||
+            item.brokerCode.toLowerCase().includes(queryLower) ||
+            item.period.toLowerCase().includes(queryLower) ||
+            item.status.toLowerCase().includes(queryLower)
 
-      const itemDate = new Date(item.period)
-      const matchesDateRange = (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate)
+          const itemDate = new Date(item.period)
+          const matchesDateRange = (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate)
 
-      return matchesQuery && matchesDateRange
-    })
+          return matchesQuery && matchesDateRange
+        })
 
-    setFilteredData(filtered)
-    setIsLoading(false)
-  }
+        setFilteredData(filtered)
+        setIsLoading(false)
+      })
+    },
+    [commissionData],
+  )
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setFilteredData(commissionData)
-  }
+  }, [commissionData])
 
   return (
     <div className="space-y-4">
@@ -165,7 +180,7 @@ export function CommissionTable() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${getTotalCommissionsPaid().toFixed(2)}</div>
+            <div className="text-2xl font-bold">${totalCommissionsPaid.toFixed(2)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -174,7 +189,7 @@ export function CommissionTable() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${getTotalCommissionsPending().toFixed(2)}</div>
+            <div className="text-2xl font-bold">${totalCommissionsPending.toFixed(2)}</div>
           </CardContent>
         </Card>
       </div>

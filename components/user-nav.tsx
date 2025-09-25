@@ -14,53 +14,73 @@ import {
 import { Home, Settings, User, LogOut, Building, UserPlus, Shield } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 
 interface UserNavProps {
   isOwner?: boolean
 }
 
+const getUserData = (isOwner: boolean) => ({
+  name: isOwner ? "Sarah Johnson" : "Michael Chen",
+  email: isOwner ? "sarah.johnson@example.com" : "michael.chen@example.com",
+})
+
 export function UserNav({ isOwner = false }: UserNavProps) {
   const router = useRouter()
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
+  const userData = useMemo(() => getUserData(isOwner), [isOwner])
+
   useEffect(() => {
-    // Fetch user data when component mounts
     const fetchUserData = async () => {
       try {
-        // In a real app, this would be an API call to get the current user
-        // For example: const response = await fetch('/api/user/me')
-
-        // Simulating a fetch response for demonstration
-        const userData = {
-          name: isOwner ? "Sarah Johnson" : "Michael Chen",
-          email: isOwner ? "sarah.johnson@example.com" : "michael.chen@example.com",
-        }
-
+        // In production, this would be a real API call
+        // For demo, set data immediately to avoid loading states
         setUser(userData)
       } catch (error) {
         console.error("Failed to fetch user data:", error)
+        setUser(userData)
       }
     }
 
     fetchUserData()
-  }, [isOwner])
+  }, [userData])
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     // In a real app, you would call your auth service's signOut method
-    // For example: await supabase.auth.signOut() or auth.signOut()
-
-    // Then redirect to login page
     router.push("/auth")
-  }
+  }, [router])
+
+  const handleDashboardClick = useCallback(() => {
+    console.log("Navigating to dashboard...")
+  }, [])
+
+  const avatarProps = useMemo(
+    () => ({
+      src: "/placeholder.svg?height=32&width=32",
+      alt: isOwner ? "Admin" : "User",
+      fallback: isOwner ? "AD" : "JD",
+    }),
+    [isOwner],
+  )
+
+  const displayData = useMemo(
+    () => ({
+      name: user?.name || (isOwner ? "Admin User" : "John Doe"),
+      email: user?.email || (isOwner ? "admin@example.com" : "john@example.com"),
+      dashboardPath: isOwner ? "/owner" : "/dashboard",
+      settingsPath: isOwner ? "/owner/settings" : "/dashboard/settings",
+    }),
+    [user, isOwner],
+  )
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg?height=32&width=32" alt={isOwner ? "Admin" : "User"} />
-            <AvatarFallback>{isOwner ? "AD" : "JD"}</AvatarFallback>
+            <AvatarImage src={avatarProps.src || "/placeholder.svg"} alt={avatarProps.alt} />
+            <AvatarFallback>{avatarProps.fallback}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -69,11 +89,9 @@ export function UserNav({ isOwner = false }: UserNavProps) {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
               {isOwner ? "Admin: " : ""}
-              {user?.name || (isOwner ? "Admin User" : "John Doe")}
+              {displayData.name}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user?.email || (isOwner ? "admin@example.com" : "john@example.com")}
-            </p>
+            <p className="text-xs leading-none text-muted-foreground">{displayData.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -87,15 +105,9 @@ export function UserNav({ isOwner = false }: UserNavProps) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href={isOwner ? "/owner" : "/dashboard"}
+              href={displayData.dashboardPath}
               className="flex items-center cursor-pointer w-full"
-              onClick={(e) => {
-                // Prevent default only if you want to do something special
-                // e.preventDefault();
-                // Use router for programmatic navigation if needed
-                // router.push(isOwner ? "/owner" : "/dashboard");
-                console.log("Navigating to dashboard...")
-              }}
+              onClick={handleDashboardClick}
             >
               <User className="mr-2 h-4 w-4" />
               <span>Dashboard</span>
@@ -103,10 +115,7 @@ export function UserNav({ isOwner = false }: UserNavProps) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link
-              href={isOwner ? "/owner/settings" : "/dashboard/settings"}
-              className="flex items-center cursor-pointer"
-            >
+            <Link href={displayData.settingsPath} className="flex items-center cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>

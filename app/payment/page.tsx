@@ -55,12 +55,26 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    // Retrieve booking data from sessionStorage
-    const storedBooking = sessionStorage.getItem("travelBooking")
-    if (storedBooking) {
-      setBookingData(JSON.parse(storedBooking))
-    } else {
-      // Redirect back to booking if no data found
+    try {
+      const storedBooking = sessionStorage.getItem("travelBooking")
+      if (storedBooking) {
+        const parsedBooking = JSON.parse(storedBooking)
+        if (parsedBooking && typeof parsedBooking === "object" && parsedBooking.bookingId) {
+          setBookingData(parsedBooking)
+        } else {
+          throw new Error("Invalid booking data structure")
+        }
+      } else {
+        throw new Error("No booking data found")
+      }
+    } catch (error) {
+      console.error("Error retrieving booking data:", error)
+      toast({
+        title: "Booking Data Error",
+        description: "Unable to retrieve booking information. Redirecting to booking page.",
+        variant: "destructive",
+      })
+      // Redirect back to booking if no data found or data is corrupted
       router.push("/book-travel-policy")
     }
   }, [router])
@@ -100,11 +114,18 @@ export default function PaymentPage() {
   }
 
   const processPayment = async () => {
-    if (!bookingData) return
+    if (!bookingData) {
+      toast({
+        title: "Error",
+        description: "Booking data not available. Please restart the booking process.",
+        variant: "destructive",
+      })
+      router.push("/book-travel-policy")
+      return
+    }
 
     setIsProcessing(true)
 
-    // Basic validation
     if (!paymentData.paymentMethod) {
       toast({
         title: "Payment Method Required",
@@ -115,7 +136,85 @@ export default function PaymentPage() {
       return
     }
 
+    if (paymentData.paymentMethod === "card") {
+      const cardErrors = []
+      if (!paymentData.cardholderName.trim()) cardErrors.push("Cardholder name")
+      if (!paymentData.cardNumber.replace(/\s/g, "")) cardErrors.push("Card number")
+      if (!paymentData.expiryDate) cardErrors.push("Expiry date")
+      if (!paymentData.cvv) cardErrors.push("CVV")
+
+      if (cardErrors.length > 0) {
+        toast({
+          title: "Card Information Required",
+          description: `Please provide: ${cardErrors.join(", ")}`,
+          variant: "destructive",
+        })
+        setIsProcessing(false)
+        return
+      }
+
+      const cardNumber = paymentData.cardNumber.replace(/\s/g, "")
+      if (cardNumber.length < 13 || cardNumber.length > 19) {
+        toast({
+          title: "Invalid Card Number",
+          description: "Please enter a valid card number.",
+          variant: "destructive",
+        })
+        setIsProcessing(false)
+        return
+      }
+
+      const [month, year] = paymentData.expiryDate.split("/")
+      if (!month || !year || Number.parseInt(month) < 1 || Number.parseInt(month) > 12) {
+        toast({
+          title: "Invalid Expiry Date",
+          description: "Please enter a valid expiry date (MM/YY).",
+          variant: "destructive",
+        })
+        setIsProcessing(false)
+        return
+      }
+
+      const currentYear = new Date().getFullYear() % 100
+      const currentMonth = new Date().getMonth() + 1
+      if (
+        Number.parseInt(year) < currentYear ||
+        (Number.parseInt(year) === currentYear && Number.parseInt(month) < currentMonth)
+      ) {
+        toast({
+          title: "Expired Card",
+          description: "Please use a card that hasn't expired.",
+          variant: "destructive",
+        })
+        setIsProcessing(false)
+        return
+      }
+    }
+
+    if (paymentData.paymentMethod === "mobile" && !paymentData.mobileNumber.trim()) {
+      toast({
+        title: "Mobile Number Required",
+        description: "Please enter your mobile money number.",
+        variant: "destructive",
+      })
+      setIsProcessing(false)
+      return
+    }
+
+    if (paymentData.paymentMethod === "bank" && !paymentData.bankAccount.trim()) {
+      toast({
+        title: "Bank Account Required",
+        description: "Please enter your bank account number.",
+        variant: "destructive",
+      })
+      setIsProcessing(false)
+      return
+    }
+
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
       const paymentResponse = await fetch("/api/payments/process", {
         method: "POST",
         headers: {
@@ -132,65 +231,91 @@ export default function PaymentPage() {
           mobileNumber: paymentData.mobileNumber,
           bankAccount: paymentData.bankAccount,
         }),
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json().catch(() => ({}))
+        throw new Error(errorData.error || `Payment failed with status ${paymentResponse.status}`)
+      }
 
       const paymentResult = await paymentResponse.json()
 
-      if (!paymentResponse.ok) {
-        throw new Error(paymentResult.error || "Payment failed")
-      }
-
-      await fetch("/api/commissions/travel-insurance", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          bookingId: bookingData.bookingId,
-          policyNumber: paymentResult.policyNumber,
-          premium: bookingData.premium,
-          commissionRate: 0.1, // 10% commission
-        }),
-      })
-
-      await fetch("/api/notifications/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "both",
-          recipient: {
-            email: bookingData.email,
-            phone: bookingData.mobile,
-            name: `${bookingData.firstName} ${bookingData.surname}`,
+      try {
+        await fetch("/api/commissions/travel-insurance", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          template: "payment_success",
-          data: {
+          body: JSON.stringify({
             bookingId: bookingData.bookingId,
             policyNumber: paymentResult.policyNumber,
-            transactionId: paymentResult.transactionId,
-            amount: bookingData.premium,
+            premium: bookingData.premium,
+            commissionRate: 0.1, // 10% commission
+          }),
+        })
+      } catch (commissionError) {
+        console.error("Commission processing failed:", commissionError)
+        // Don't fail the payment for commission errors
+      }
+
+      try {
+        await fetch("/api/notifications/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      })
+          body: JSON.stringify({
+            type: "both",
+            recipient: {
+              email: bookingData.email,
+              phone: bookingData.mobile,
+              name: `${bookingData.firstName} ${bookingData.surname}`,
+            },
+            template: "payment_success",
+            data: {
+              bookingId: bookingData.bookingId,
+              policyNumber: paymentResult.policyNumber,
+              transactionId: paymentResult.transactionId,
+              amount: bookingData.premium,
+            },
+          }),
+        })
+      } catch (notificationError) {
+        console.error("Notification sending failed:", notificationError)
+        // Don't fail the payment for notification errors
+      }
 
       // Clear booking data from sessionStorage
       sessionStorage.removeItem("travelBooking")
 
       toast({
         title: "Payment Successful!",
-        description: paymentResult.message,
+        description: paymentResult.message || "Your travel insurance policy is now active.",
       })
 
       // Redirect to confirmation page
       router.push(`/booking-confirmation?id=${bookingData.bookingId}&transaction=${paymentResult.transactionId}`)
     } catch (error) {
       console.error("[v0] Payment error:", error)
+
+      let errorMessage = "There was an error processing your payment. Please try again."
+
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          errorMessage = "Payment request timed out. Please try again."
+        } else if (error.message.includes("fetch")) {
+          errorMessage = "Network error. Please check your connection and try again."
+        } else {
+          errorMessage = error.message
+        }
+      }
+
       toast({
         title: "Payment Failed",
-        description:
-          error instanceof Error ? error.message : "There was an error processing your payment. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {

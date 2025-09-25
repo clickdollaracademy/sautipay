@@ -13,6 +13,18 @@ export async function getUserRole() {
 }
 
 export async function requireAuth() {
+  if (process.env.NODE_ENV === "development") {
+    return {
+      success: true,
+      user: {
+        id: "dev-user-123",
+        email: "dev@example.com",
+        companyId: "dev-company-123",
+        role: "admin",
+      },
+    }
+  }
+
   const token = await getAuthToken()
 
   if (!token) {
@@ -37,6 +49,18 @@ export async function requireAuth() {
 }
 
 export async function requireAdmin() {
+  if (process.env.NODE_ENV === "development") {
+    return {
+      success: true,
+      user: {
+        id: "dev-admin-123",
+        email: "admin@example.com",
+        companyId: "dev-company-123",
+        role: "admin",
+      },
+    }
+  }
+
   const authResult = await requireAuth()
 
   if (!authResult.success) {

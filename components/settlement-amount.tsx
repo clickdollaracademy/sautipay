@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -49,7 +49,6 @@ const settlementData: SettlementData[] = [
 
 export function SettlementAmount() {
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [dailySum, setDailySum] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedTransactions, setSelectedTransactions] = useState<Transaction[]>([])
   const [selectedTotalAmount, setSelectedTotalAmount] = useState(0)
@@ -58,26 +57,33 @@ export function SettlementAmount() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date())
-    }, 1000)
+    }, 60000) // Update every minute instead of every second
     return () => clearInterval(timer)
   }, [])
 
-  useEffect(() => {
+  const dailySum = useMemo(() => {
     const today = currentTime.toISOString().split("T")[0]
-    const todaySum = settlementData
-      .filter((item) => item.date === today)
-      .reduce((sum, item) => sum + item.settledAmount, 0)
-    setDailySum(todaySum)
+    return settlementData.filter((item) => item.date === today).reduce((sum, item) => sum + item.settledAmount, 0)
   }, [currentTime])
 
-  const isTransferReady = dailySum >= 1000 && currentTime.getHours() === 0 && currentTime.getMinutes() === 0
+  const totalSettlement = useMemo(() => {
+    return settlementData.reduce((sum, item) => sum + item.settledAmount, 0)
+  }, [])
 
-  const handleDetailClick = (transactions: Transaction[], totalAmount: number, date: string) => {
+  const isTransferReady = useMemo(() => {
+    return dailySum >= 1000 && currentTime.getHours() === 0 && currentTime.getMinutes() === 0
+  }, [dailySum, currentTime])
+
+  const handleDetailClick = useCallback((transactions: Transaction[], totalAmount: number, date: string) => {
     setSelectedTransactions(transactions)
     setSelectedTotalAmount(totalAmount)
     setSelectedSettlementDate(date)
     setIsModalOpen(true)
-  }
+  }, [])
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false)
+  }, [])
 
   return (
     <div className="space-y-4">
@@ -151,9 +157,7 @@ export function SettlementAmount() {
                 <ArrowDownToLine className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Total Settlement (All Time)</span>
               </div>
-              <span className="font-bold text-lg">
-                ${settlementData.reduce((sum, item) => sum + item.settledAmount, 0).toFixed(2)}
-              </span>
+              <span className="font-bold text-lg">${totalSettlement.toFixed(2)}</span>
             </div>
           </div>
         </CardContent>
@@ -168,7 +172,7 @@ export function SettlementAmount() {
 
       <TransactionExtractModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         transactions={selectedTransactions}
         totalAmount={selectedTotalAmount}
         settlementDate={selectedSettlementDate}

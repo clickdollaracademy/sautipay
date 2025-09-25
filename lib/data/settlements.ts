@@ -9,6 +9,11 @@ interface Settlement {
 interface SettlementQueryParams {
   page: number
   limit: number
+  search?: string
+  startDate?: string
+  endDate?: string
+  status?: string
+  companyId?: string
 }
 
 interface PaginatedResponse<T> {
@@ -61,16 +66,33 @@ const mockSettlements: Settlement[] = [
 ]
 
 export async function getSettlements(params: SettlementQueryParams): Promise<PaginatedResponse<Settlement>> {
-  const { page, limit } = params
+  const { page, limit, search, startDate, endDate, status, companyId } = params
+
+  let filteredData = [...mockSettlements]
+
+  // Apply search filter
+  if (search) {
+    filteredData = filteredData.filter(
+      (settlement) => settlement.date.includes(search) || settlement.settledAmount.toString().includes(search),
+    )
+  }
+
+  // Apply date range filter
+  if (startDate) {
+    filteredData = filteredData.filter((settlement) => settlement.date >= startDate)
+  }
+  if (endDate) {
+    filteredData = filteredData.filter((settlement) => settlement.date <= endDate)
+  }
 
   // Calculate pagination
-  const total = mockSettlements.length
+  const total = filteredData.length
   const totalPages = Math.ceil(total / limit)
   const startIndex = (page - 1) * limit
   const endIndex = startIndex + limit
 
   // Get paginated data
-  const paginatedData = mockSettlements.slice(startIndex, endIndex)
+  const paginatedData = filteredData.slice(startIndex, endIndex)
 
   return {
     data: paginatedData,

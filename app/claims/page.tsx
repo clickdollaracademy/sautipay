@@ -624,7 +624,7 @@ export default function ClaimsPage() {
               <Mail className="h-5 w-5 text-blue-600 mt-1" />
               <div>
                 <h4 className="font-medium">Email Support</h4>
-                <p className="text-sm text-gray-600">claims@sautipay.com</p>
+                <p className="text-sm text-gray-600">claims@sautitravels.com</p>
               </div>
             </div>
           </div>

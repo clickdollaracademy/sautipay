@@ -2,7 +2,17 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CreditCard, DollarSign, LayoutDashboard, RefreshCcw, FileText, Users, Building2, Settings } from "lucide-react"
+import {
+  CreditCard,
+  DollarSign,
+  LayoutDashboard,
+  RefreshCcw,
+  FileText,
+  Users,
+  Building2,
+  Settings,
+  ClipboardList,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const sidebarItems = [
@@ -10,6 +20,11 @@ const sidebarItems = [
     title: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Claims",
+    href: "/admin/claims",
+    icon: ClipboardList,
   },
   {
     title: "Settlements",

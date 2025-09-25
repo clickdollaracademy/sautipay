@@ -45,6 +45,12 @@ const sidebarNavItems = [
     priority: true,
   },
   {
+    title: "Claims",
+    href: "/owner/claims",
+    icon: AlertCircle,
+    prefetch: true,
+  },
+  {
     title: "Refunds",
     href: "/owner/refunds",
     icon: RefreshCcw,

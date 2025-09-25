@@ -8,14 +8,44 @@ export async function processPayment(formData: FormData) {
     const currency = formData.get("currency") as string
     const paymentMethod = formData.get("paymentMethod") as string
 
-    if (isNaN(amount) || !currency || !paymentMethod) {
+    if (!amount || isNaN(amount) || amount <= 0) {
       return {
-        error: "Amount, currency, and payment method are required",
+        error: "Valid payment amount is required",
       }
     }
 
+    if (amount > 1000000) {
+      return {
+        error: "Payment amount exceeds maximum limit",
+      }
+    }
+
+    if (!currency || typeof currency !== "string" || currency.length !== 3) {
+      return {
+        error: "Valid currency code is required",
+      }
+    }
+
+    if (!paymentMethod || typeof paymentMethod !== "string") {
+      return {
+        error: "Payment method is required",
+      }
+    }
+
+    const now = Date.now()
+    const lastPayment = global.lastPaymentTime || 0
+    if (now - lastPayment < 1000) {
+      // 1 second rate limit
+      return {
+        error: "Please wait before making another payment",
+      }
+    }
+    global.lastPaymentTime = now
+
     // In a real application, you would process the payment through a payment gateway
     // For demo purposes, we'll just return success
+
+    const transactionId = `TRX${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`
 
     // Revalidate the payments page to show the new payment
     revalidatePath("/dashboard")
@@ -24,7 +54,7 @@ export async function processPayment(formData: FormData) {
       success: true,
       message: "Payment processed successfully",
       data: {
-        transactionId: `TRX${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        transactionId,
         amount,
         currency,
         paymentMethod,
@@ -35,13 +65,18 @@ export async function processPayment(formData: FormData) {
   } catch (error) {
     console.error("Error processing payment:", error)
     return {
-      error: "Failed to process payment",
+      error: "Failed to process payment. Please try again.",
     }
   }
 }
 
 export async function getPaymentHistory() {
   try {
+    if (Math.random() < 0.01) {
+      // 1% chance of simulated error
+      throw new Error("Simulated database connection error")
+    }
+
     // In a real application, you would fetch payment history from a database
     // For demo purposes, we'll return mock data
 
@@ -85,7 +120,7 @@ export async function getPaymentHistory() {
   } catch (error) {
     console.error("Error fetching payment history:", error)
     return {
-      error: "Failed to fetch payment history",
+      error: "Failed to fetch payment history. Please try again later.",
     }
   }
 }

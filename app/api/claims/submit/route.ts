@@ -40,6 +40,22 @@ export async function POST(request: NextRequest) {
       claimant: claimData.fullName,
     })
 
+    const claimTransactionData = {
+      id: `TRAN${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, "0")}${Math.floor(Math.random() * 99) + 1}JAZZ`,
+      date: new Date().toISOString().split("T")[0],
+      clientName: claimData.fullName,
+      amount: 0, // Will be updated when claim is approved
+      currency: "USD",
+      netPremium: 0,
+      status: "Pending",
+      companyId: "company1",
+      claimReference: claimReference,
+      policyNumber: claimData.policyNumber,
+      transactionType: "claim_submission",
+    }
+
+    console.log("[v0] Claim transaction created:", claimTransactionData)
+
     // In a real implementation:
     // 1. Save claim to database
     // 2. Upload and process documents
