@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Calendar, MapPin, Users, FileText } from "lucide-react"
+import { CheckCircle, Calendar, MapPin, Users, FileText, DollarSign } from "lucide-react"
 
 interface BookingData {
   firstName: string
@@ -23,6 +23,7 @@ interface BookingData {
 export default function BookingSummaryPage() {
   const router = useRouter()
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
+  const exchangeRate = 3700 // UGX per USD - should be fetched from admin settings
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("bookingData")
@@ -59,6 +60,18 @@ export default function BookingSummaryPage() {
   }
 
   const totalTravelers = Number.parseInt(bookingData.numberOfAdults) + Number.parseInt(bookingData.numberOfChildren)
+
+  const calculatePremium = () => {
+    const basePremium = 50 // Base premium per adult
+    const childDiscount = 0.5 // 50% discount for children
+    const adults = Number.parseInt(bookingData.numberOfAdults)
+    const children = Number.parseInt(bookingData.numberOfChildren)
+
+    return adults * basePremium + children * basePremium * childDiscount
+  }
+
+  const premiumUSD = calculatePremium()
+  const premiumUGX = premiumUSD * exchangeRate
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -137,6 +150,50 @@ export default function BookingSummaryPage() {
                     {bookingData.numberOfAdults !== "1" ? "s" : ""}, {bookingData.numberOfChildren} child
                     {bookingData.numberOfChildren !== "1" ? "ren" : ""})
                   </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-xl text-[#002B5B] flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Premium Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-[#002B5B]">Adults ({bookingData.numberOfAdults})</span>
+                    <span className="text-gray-700">
+                      ${(Number.parseInt(bookingData.numberOfAdults) * 50).toFixed(2)} USD
+                    </span>
+                  </div>
+                  {Number.parseInt(bookingData.numberOfChildren) > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-[#002B5B]">Children ({bookingData.numberOfChildren})</span>
+                      <span className="text-gray-700">
+                        ${(Number.parseInt(bookingData.numberOfChildren) * 25).toFixed(2)} USD
+                      </span>
+                    </div>
+                  )}
+                  <div className="border-t pt-2 flex justify-between items-center">
+                    <span className="text-lg font-bold text-[#002B5B]">Total Premium</span>
+                    <span className="text-lg font-bold text-[#002B5B]">${premiumUSD.toFixed(2)} USD</span>
+                  </div>
+                  <div className="bg-white p-3 rounded border-l-4 border-blue-500">
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div className="flex justify-between">
+                        <span>Mobile Money Equivalent:</span>
+                        <span className="font-semibold">UGX {premiumUGX.toLocaleString()}</span>
+                      </div>
+                      <div className="text-xs text-center text-gray-500">
+                        Exchange Rate: 1 USD = {exchangeRate.toLocaleString()} UGX
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>

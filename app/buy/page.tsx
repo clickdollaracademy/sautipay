@@ -3459,6 +3459,8 @@ const countries = [
   "Vietnam",
 ]
 
+const exchangeRate = 3700 // UGX per USD - should be fetched from admin settings
+
 export default function BuyTravelInsurancePage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
@@ -3479,6 +3481,9 @@ export default function BuyTravelInsurancePage() {
   const [nationalityOpen, setNationalityOpen] = useState(false)
   const [filteredDestinations, setFilteredDestinations] = useState(worldwideDestinations)
   const [filteredCountries, setFilteredCountries] = useState(countries)
+
+  // Placeholder for premium, this should be calculated based on form data
+  const premium = 50.0 // Example premium value
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
@@ -3893,6 +3898,25 @@ export default function BuyTravelInsurancePage() {
                       className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                       required
                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Premium Display with Currency Conversion */}
+              <div className="bg-blue-50 p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-[#002B5B] mb-4">Premium Summary</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Base Premium:</span>
+                    <span className="font-semibold">${premium.toFixed(2)} USD</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Equivalent (Mobile Money):</span>
+                    <span>UGX {(premium * exchangeRate).toLocaleString()}</span>
+                  </div>
+                  <div className="border-t pt-2 flex justify-between text-lg font-bold text-[#002B5B]">
+                    <span>Total Premium:</span>
+                    <span>${premium.toFixed(2)} USD</span>
                   </div>
                 </div>
               </div>

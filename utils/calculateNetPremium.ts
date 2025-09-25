@@ -45,13 +45,12 @@ function getExchangeRate(from: string, to: string): number {
     return cached.rate
   }
 
-  // Static rates for demo - in production, this would fetch from API
   const rates: Record<string, number> = {
     USD: 1,
     EUR: 0.85,
     GBP: 0.73,
     JPY: 110,
-    UGX: 3700,
+    UGX: 3700, // This should be fetched from admin settings in production
   }
 
   const rate = (rates[to] || 1) / (rates[from] || 1)
@@ -60,6 +59,22 @@ function getExchangeRate(from: string, to: string): number {
   exchangeRateCache.set(cacheKey, { rate, timestamp: Date.now() })
 
   return rate
+}
+
+export function calculatePremiumWithUGX(
+  grossPremium: number,
+  deductibleFees: DeductibleFee[],
+  baseCurrency = "USD",
+): { netPremium: number; ugxEquivalent: number; exchangeRate: number } {
+  const netPremium = calculateNetPremium(grossPremium, deductibleFees, baseCurrency)
+  const exchangeRate = getExchangeRate("USD", "UGX")
+  const ugxEquivalent = netPremium * exchangeRate
+
+  return {
+    netPremium,
+    ugxEquivalent,
+    exchangeRate,
+  }
 }
 
 export function clearExchangeRateCache(): void {

@@ -13,6 +13,8 @@ export default function BookingConfirmationPage() {
   const searchParams = useSearchParams()
   const bookingId = searchParams.get("id")
   const [confirmationSent, setConfirmationSent] = useState(false)
+  const exchangeRate = 3700 // UGX per USD - should be fetched from admin settings
+  const mockPremium = 125.0 // This should come from the actual booking data
 
   useEffect(() => {
     // Simulate sending confirmation email/SMS
@@ -53,75 +55,87 @@ export default function BookingConfirmationPage() {
               <CardDescription>Your travel insurance policy is now active</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-sm text-gray-500">Premium Paid</h4>
+                    <p className="font-mono text-lg">${mockPremium.toFixed(2)} USD</p>
+                    <p className="text-sm text-gray-600">UGX {(mockPremium * exchangeRate).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-gray-500">Policy Status</h4>
+                    <Badge className="bg-green-600">Active</Badge>
+                  </div>
+                </div>
+
+                <Separator />
+
                 <div>
-                  <h4 className="font-semibold text-sm text-gray-500">Booking Reference</h4>
-                  <p className="font-mono text-lg">{bookingId}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-gray-500">Policy Status</h4>
-                  <Badge className="bg-green-600">Active</Badge>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div>
-                <h4 className="font-semibold mb-2">What happens next?</h4>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">1</span>
+                  <h4 className="font-semibold mb-2">What happens next?</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-bold text-blue-600">1</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">Confirmation Email Sent</p>
+                        <p className="text-sm text-gray-600">
+                          {confirmationSent ? (
+                            <span className="text-green-600">✓ Confirmation email has been sent to your inbox</span>
+                          ) : (
+                            "Sending confirmation email with policy details..."
+                          )}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">Confirmation Email Sent</p>
-                      <p className="text-sm text-gray-600">
-                        {confirmationSent ? (
-                          <span className="text-green-600">✓ Confirmation email has been sent to your inbox</span>
-                        ) : (
-                          "Sending confirmation email with policy details..."
-                        )}
-                      </p>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-bold text-blue-600">2</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">Policy Documents</p>
+                        <p className="text-sm text-gray-600">
+                          Download your policy certificate and keep it handy during travel
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">2</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">Policy Documents</p>
-                      <p className="text-sm text-gray-600">
-                        Download your policy certificate and keep it handy during travel
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">3</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">24/7 Support</p>
-                      <p className="text-sm text-gray-600">
-                        Our emergency assistance team is available round the clock
-                      </p>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-bold text-blue-600">3</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">24/7 Support</p>
+                        <p className="text-sm text-gray-600">
+                          Our emergency assistance team is available round the clock
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Separator />
 
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={downloadPolicy} className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Download Policy Certificate
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/claims">
-                    <FileText className="h-4 w-4 mr-2" />
-                    File a Claim
-                  </Link>
-                </Button>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-xs text-blue-800">
+                    <strong>Payment Note:</strong> Mobile money payments are processed in UGX at the current exchange
+                    rate of 1 USD = {exchangeRate.toLocaleString()} UGX
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div className="flex flex-wrap gap-3">
+                  <Button onClick={downloadPolicy} className="flex items-center gap-2">
+                    <Download className="h-4 w-4" />
+                    Download Policy Certificate
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/claims">
+                      <FileText className="h-4 w-4 mr-2" />
+                      File a Claim
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

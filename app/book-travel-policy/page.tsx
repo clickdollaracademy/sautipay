@@ -115,6 +115,7 @@ export default function BookTravelPolicyPage() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
+  const exchangeRate = 3700 // UGX per USD - should be fetched from admin settings
   const [formData, setFormData] = useState<BookingFormData>({
     surname: "",
     firstName: "",
@@ -572,17 +573,26 @@ export default function BookTravelPolicyPage() {
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span>Adults ({formData.adults})</span>
-                        <span>${(formData.adults * 50).toFixed(2)}</span>
+                        <span>${(formData.adults * 50).toFixed(2)} USD</span>
                       </div>
                       {formData.children > 0 && (
                         <div className="flex justify-between">
                           <span>Children ({formData.children})</span>
-                          <span>${(formData.children * 25).toFixed(2)}</span>
+                          <span>${(formData.children * 25).toFixed(2)} USD</span>
                         </div>
                       )}
                       <div className="border-t pt-1 flex justify-between font-semibold">
                         <span>Total Premium</span>
-                        <span>${calculatePremium().toFixed(2)}</span>
+                        <span>${calculatePremium().toFixed(2)} USD</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-2 pt-2 border-t">
+                        <div className="flex justify-between">
+                          <span>Mobile Money Equivalent:</span>
+                          <span>UGX {(calculatePremium() * exchangeRate).toLocaleString()}</span>
+                        </div>
+                        <div className="text-center mt-1">
+                          <span>Exchange Rate: 1 USD = {exchangeRate.toLocaleString()} UGX</span>
+                        </div>
                       </div>
                     </div>
                   </div>

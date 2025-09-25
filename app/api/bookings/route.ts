@@ -15,6 +15,8 @@ interface BookingData {
   bookingId: string
 }
 
+const exchangeRate = 3700 // UGX per USD - should be fetched from admin settings
+
 // POST /api/bookings - Create new booking
 export async function POST(request: NextRequest) {
   try {
@@ -40,8 +42,14 @@ export async function POST(request: NextRequest) {
       bookingData.premium = bookingData.adults * basePremium + bookingData.children * basePremium * childDiscount
     }
 
+    const ugxAmount = bookingData.premium * exchangeRate
+
     // In a real implementation, save to database
-    console.log("[v0] Booking created:", bookingData)
+    console.log("[v0] Booking created:", {
+      ...bookingData,
+      ugxEquivalent: ugxAmount,
+      exchangeRate: exchangeRate,
+    })
 
     // Simulate database save
     await new Promise((resolve) => setTimeout(resolve, 100))
@@ -50,6 +58,9 @@ export async function POST(request: NextRequest) {
       success: true,
       bookingId: bookingData.bookingId,
       premium: bookingData.premium,
+      premiumUSD: bookingData.premium,
+      premiumUGX: ugxAmount,
+      exchangeRate: exchangeRate,
       message: "Booking created successfully",
     })
   } catch (error) {
