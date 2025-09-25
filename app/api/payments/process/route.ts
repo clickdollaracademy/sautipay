@@ -10,6 +10,7 @@ interface PaymentData {
   cardholderName?: string
   mobileNumber?: string
   bankAccount?: string
+  mobileProvider?: string // Added mobile provider field
 }
 
 // POST /api/payments/process - Process payment
@@ -118,12 +119,19 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Mobile number is required" }, { status: 400 })
         }
 
+        if (!paymentData.mobileProvider || !["mtn", "airtel"].includes(paymentData.mobileProvider)) {
+          return NextResponse.json(
+            { error: "Valid mobile money provider (MTN or Airtel) is required" },
+            { status: 400 },
+          )
+        }
+
         const cleanMobile = paymentData.mobileNumber.replace(/\s/g, "")
         if (!/^[+]?[\d]{8,15}$/.test(cleanMobile)) {
           return NextResponse.json({ error: "Invalid mobile number format" }, { status: 400 })
         }
 
-        processingTime = 5000 // Mobile money takes longer
+        processingTime = paymentData.mobileProvider === "mtn" ? 4000 : 5500 // MTN slightly faster
         break
 
       case "bank":
@@ -200,7 +208,8 @@ export async function POST(request: NextRequest) {
         successRate = 0.92 // Cards have slightly lower success rate
         break
       case "mobile":
-        successRate = 0.88 // Mobile money has more variability
+        // Different success rates for different providers
+        successRate = paymentData.mobileProvider === "mtn" ? 0.9 : 0.85 // MTN slightly more reliable
         break
       case "bank":
         successRate = 0.98 // Bank transfers are more reliable
@@ -217,7 +226,8 @@ export async function POST(request: NextRequest) {
           errorMessage = "Card payment declined. Please check your card details or try a different card."
           break
         case "mobile":
-          errorMessage = "Mobile money payment failed. Please ensure you have sufficient balance and try again."
+          const providerName = paymentData.mobileProvider === "mtn" ? "MTN Mobile Money" : "Airtel Money"
+          errorMessage = `${providerName} payment failed. Please ensure you have sufficient balance and try again.`
           break
         case "bank":
           errorMessage = "Bank transfer could not be initiated. Please verify your account details."
@@ -247,11 +257,14 @@ export async function POST(request: NextRequest) {
       bookingId: paymentData.bookingId,
       amount: paymentData.amount,
       paymentMethod: paymentData.paymentMethod,
+      mobileProvider: paymentData.mobileProvider, // Include provider in response
       status: paymentData.paymentMethod === "bank" ? "pending" : "completed",
       message:
         paymentData.paymentMethod === "bank"
           ? "Payment initiated. Policy will be activated upon bank transfer confirmation."
-          : "Payment successful! Your travel insurance policy is now active.",
+          : paymentData.paymentMethod === "mobile"
+            ? `Payment successful via ${paymentData.mobileProvider === "mtn" ? "MTN Mobile Money" : "Airtel Money"}! Your travel insurance policy is now active.`
+            : "Payment successful! Your travel insurance policy is now active.",
       estimatedActivation:
         paymentData.paymentMethod === "bank"
           ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours for bank transfer

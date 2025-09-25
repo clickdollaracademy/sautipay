@@ -35,6 +35,7 @@ interface PaymentFormData {
   cvv: string
   cardholderName: string
   mobileNumber: string
+  mobileProvider: string // Added mobile provider field
   bankAccount: string
   savePaymentMethod: boolean
 }
@@ -49,6 +50,7 @@ export default function PaymentPage() {
     cvv: "",
     cardholderName: "",
     mobileNumber: "",
+    mobileProvider: "", // Initialized mobile provider field
     bankAccount: "",
     savePaymentMethod: false,
   })
@@ -201,6 +203,16 @@ export default function PaymentPage() {
       return
     }
 
+    if (paymentData.paymentMethod === "mobile" && !paymentData.mobileProvider) {
+      toast({
+        title: "Mobile Provider Required",
+        description: "Please select your mobile money provider (MTN or Airtel).",
+        variant: "destructive",
+      })
+      setIsProcessing(false)
+      return
+    }
+
     if (paymentData.paymentMethod === "bank" && !paymentData.bankAccount.trim()) {
       toast({
         title: "Bank Account Required",
@@ -223,6 +235,7 @@ export default function PaymentPage() {
         body: JSON.stringify({
           bookingId: bookingData.bookingId,
           paymentMethod: paymentData.paymentMethod,
+          mobileProvider: paymentData.mobileProvider, // Added mobile provider to payment data
           amount: bookingData.premium,
           cardNumber: paymentData.cardNumber,
           expiryDate: paymentData.expiryDate,
@@ -444,6 +457,33 @@ export default function PaymentPage() {
               {paymentData.paymentMethod === "mobile" && (
                 <div className="space-y-4">
                   <div>
+                    <Label className="text-base font-semibold">Select Mobile Money Provider</Label>
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <Button
+                        variant={paymentData.mobileProvider === "mtn" ? "default" : "outline"}
+                        onClick={() => handleInputChange("mobileProvider", "mtn")}
+                        className="h-16 flex flex-col items-center gap-1"
+                        disabled={isProcessing}
+                      >
+                        <div className="w-8 h-8 bg-yellow-500 rounded flex items-center justify-center">
+                          <span className="text-black font-bold text-xs">MTN</span>
+                        </div>
+                        <span className="text-xs">MTN Mobile Money</span>
+                      </Button>
+                      <Button
+                        variant={paymentData.mobileProvider === "airtel" ? "default" : "outline"}
+                        onClick={() => handleInputChange("mobileProvider", "airtel")}
+                        className="h-16 flex flex-col items-center gap-1"
+                        disabled={isProcessing}
+                      >
+                        <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+                          <span className="text-white font-bold text-xs">AL</span>
+                        </div>
+                        <span className="text-xs">Airtel Money</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
                     <Label htmlFor="mobileNumber">Mobile Number</Label>
                     <Input
                       id="mobileNumber"
@@ -454,9 +494,31 @@ export default function PaymentPage() {
                     />
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      You will receive a payment prompt on your mobile device to complete the transaction.
-                    </p>
+                    {paymentData.mobileProvider === "mtn" && (
+                      <div>
+                        <p className="text-sm text-blue-800 font-semibold mb-2">MTN Mobile Money Instructions:</p>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• You will receive a payment prompt on your phone</li>
+                          <li>• Enter your MTN Mobile Money PIN to confirm</li>
+                          <li>• Processing fee: 1.5% of transaction amount</li>
+                        </ul>
+                      </div>
+                    )}
+                    {paymentData.mobileProvider === "airtel" && (
+                      <div>
+                        <p className="text-sm text-blue-800 font-semibold mb-2">Airtel Money Instructions:</p>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• You will receive a payment prompt on your phone</li>
+                          <li>• Enter your Airtel Money PIN to confirm</li>
+                          <li>• Processing fee: 1.5% of transaction amount</li>
+                        </ul>
+                      </div>
+                    )}
+                    {!paymentData.mobileProvider && (
+                      <p className="text-sm text-blue-800">
+                        Please select your mobile money provider above to continue.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
