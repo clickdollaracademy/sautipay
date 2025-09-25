@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react"
@@ -39,9 +39,13 @@ export function SmartFormField({
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([])
 
+  const validationRef = useRef(validation)
+  validationRef.current = validation
+
   const validateValue = useCallback(
     async (inputValue: string) => {
-      if (!validation || !inputValue.trim()) {
+      const currentValidation = validationRef.current
+      if (!currentValidation || !inputValue.trim()) {
         setValidationState({ status: "idle" })
         return
       }
@@ -49,7 +53,7 @@ export function SmartFormField({
       setValidationState({ status: "validating" })
 
       try {
-        const result = await validation(inputValue)
+        const result = await currentValidation(inputValue)
         setValidationState({
           status: result.valid ? "valid" : "invalid",
           message: result.message,
@@ -62,11 +66,11 @@ export function SmartFormField({
         })
       }
     },
-    [validation],
+    [], // Remove validation from dependencies to prevent infinite loop
   )
 
   useEffect(() => {
-    if (!validation || !value) {
+    if (!validationRef.current || !value) {
       setValidationState({ status: "idle" })
       return
     }
@@ -78,7 +82,7 @@ export function SmartFormField({
     return () => {
       clearTimeout(validateTimer)
     }
-  }, [value, validateValue])
+  }, [value]) // Only depend on value, not validateValue
 
   useEffect(() => {
     try {
