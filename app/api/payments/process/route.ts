@@ -131,6 +131,14 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Invalid mobile number format" }, { status: 400 })
         }
 
+        const ugxAmount = paymentData.amount * 3700 // Convert USD to UGX using admin-set rate
+        console.log("[v0] Mobile money payment conversion:", {
+          usdAmount: paymentData.amount,
+          ugxAmount: ugxAmount,
+          provider: paymentData.mobileProvider,
+          exchangeRate: 3700,
+        })
+
         processingTime = paymentData.mobileProvider === "mtn" ? 4000 : 5500 // MTN slightly faster
         break
 
@@ -189,6 +197,7 @@ export async function POST(request: NextRequest) {
       clientName: `Booking ${paymentData.bookingId}`,
       amount: paymentData.amount,
       currency: "USD",
+      ugxAmount: paymentData.paymentMethod === "mobile" ? paymentData.amount * 3700 : null,
       netPremium: Math.round(paymentData.amount * 0.85 * 100) / 100, // Assuming 15% fees, rounded to 2 decimals
       status: paymentData.paymentMethod === "bank" ? "Pending" : "Completed",
       companyId: "company1",
@@ -248,6 +257,10 @@ export async function POST(request: NextRequest) {
       transactionId,
       policyNumber,
       bookingId: paymentData.bookingId,
+      usdAmount: paymentData.amount,
+      ugxAmount: paymentData.paymentMethod === "mobile" ? paymentData.amount * 3700 : null,
+      paymentMethod: paymentData.paymentMethod,
+      mobileProvider: paymentData.mobileProvider,
     })
 
     return NextResponse.json({
@@ -256,6 +269,7 @@ export async function POST(request: NextRequest) {
       policyNumber,
       bookingId: paymentData.bookingId,
       amount: paymentData.amount,
+      ugxAmount: paymentData.paymentMethod === "mobile" ? paymentData.amount * 3700 : null,
       paymentMethod: paymentData.paymentMethod,
       mobileProvider: paymentData.mobileProvider, // Include provider in response
       status: paymentData.paymentMethod === "bank" ? "pending" : "completed",
@@ -263,7 +277,7 @@ export async function POST(request: NextRequest) {
         paymentData.paymentMethod === "bank"
           ? "Payment initiated. Policy will be activated upon bank transfer confirmation."
           : paymentData.paymentMethod === "mobile"
-            ? `Payment successful via ${paymentData.mobileProvider === "mtn" ? "MTN Mobile Money" : "Airtel Money"}! Your travel insurance policy is now active.`
+            ? `Payment successful via ${paymentData.mobileProvider === "mtn" ? "MTN Mobile Money" : "Airtel Money"}! Your travel insurance policy is now active. Amount charged: UGX ${(paymentData.amount * 3700).toLocaleString()}`
             : "Payment successful! Your travel insurance policy is now active.",
       estimatedActivation:
         paymentData.paymentMethod === "bank"

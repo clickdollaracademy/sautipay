@@ -483,6 +483,33 @@ export default function PaymentPage() {
                       </Button>
                     </div>
                   </div>
+                  {paymentData.mobileProvider && (
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold text-blue-900">Payment Amount</h4>
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          Mobile Money
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">USD Amount (Display):</span>
+                          <span className="font-bold text-blue-900">${bookingData.premium.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-blue-700">UGX Amount (Charged):</span>
+                          <span className="font-bold text-blue-900">
+                            UGX {(bookingData.premium * 3700).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="text-xs text-blue-600 mt-2 p-2 bg-blue-100 rounded">
+                          <strong>Exchange Rate:</strong> 1 USD = 3,700 UGX (Set by admin)
+                          <br />
+                          <strong>Note:</strong> You will be charged in UGX via mobile money
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <Label htmlFor="mobileNumber">Mobile Number</Label>
                     <Input
@@ -500,7 +527,12 @@ export default function PaymentPage() {
                         <ul className="text-sm text-blue-700 space-y-1">
                           <li>• You will receive a payment prompt on your phone</li>
                           <li>• Enter your MTN Mobile Money PIN to confirm</li>
+                          <li>
+                            • Amount will be charged in UGX:{" "}
+                            <strong>UGX {(bookingData.premium * 3700).toLocaleString()}</strong>
+                          </li>
                           <li>• Processing fee: 1.5% of transaction amount</li>
+                          <li>• Processing time: 2-3 minutes</li>
                         </ul>
                       </div>
                     )}
@@ -510,7 +542,12 @@ export default function PaymentPage() {
                         <ul className="text-sm text-blue-700 space-y-1">
                           <li>• You will receive a payment prompt on your phone</li>
                           <li>• Enter your Airtel Money PIN to confirm</li>
+                          <li>
+                            • Amount will be charged in UGX:{" "}
+                            <strong>UGX {(bookingData.premium * 3700).toLocaleString()}</strong>
+                          </li>
                           <li>• Processing fee: 1.5% of transaction amount</li>
+                          <li>• Processing time: 3-4 minutes</li>
                         </ul>
                       </div>
                     )}
@@ -575,7 +612,14 @@ export default function PaymentPage() {
                 ) : (
                   <>
                     <Shield className="mr-2 h-4 w-4" />
-                    Complete Secure Payment - ${bookingData.premium.toFixed(2)}
+                    {paymentData.paymentMethod === "mobile" && paymentData.mobileProvider ? (
+                      <>
+                        Complete Secure Payment - ${bookingData.premium.toFixed(2)} (UGX{" "}
+                        {(bookingData.premium * 3700).toLocaleString()})
+                      </>
+                    ) : (
+                      <>Complete Secure Payment - ${bookingData.premium.toFixed(2)}</>
+                    )}
                   </>
                 )}
               </Button>
